@@ -1,6 +1,5 @@
+import 'dart:developer';
 
-
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
@@ -130,36 +129,33 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ..add(DrawingArea(
                                         point: details.localPosition,
                                         areaPaint: Paint()
-                                          ..strokeCap = StrokeCap.round
-                                          ..isAntiAlias = true
+                                          // ..strokeCap = StrokeCap.butt
+                                          ..style = PaintingStyle.stroke
+                                          // ..isAntiAlias = true
                                           ..color = selectedColor!
                                           ..strokeWidth = strokeWidth!));
-                              // pointsNotifier.value!.add(DrawingArea(
-                              //     point: details.localPosition,
-                              //     areaPaint: Paint()
-                              //       ..strokeCap = StrokeCap.round
-                              //       ..isAntiAlias = true
-                              //       ..color = selectedColor!
-                              //       ..strokeWidth = strokeWidth!));
+                              // pointsNotifier.value =
+                              //     List.from(pointsNotifier.value!)
+                              //       ..add(DrawingArea(
+                              //           point: details.localPosition,
+                              //           areaPaint: Paint()
+                              //             ..strokeCap = StrokeCap.round
+                              //             ..isAntiAlias = true
+                              //             ..color = selectedColor!
+                              //             ..strokeWidth = strokeWidth!));
                             },
                             onPanUpdate: (details) {
-                              pointsNotifier.value =
-                                  List.from(pointsNotifier.value!)
-                                    ..add(DrawingArea(
-                                        point: details.localPosition,
-                                        areaPaint: Paint()
-                                          ..strokeCap = StrokeCap.round
-                                          ..isAntiAlias = true
-                                          ..color = selectedColor!
-                                          ..strokeWidth = strokeWidth!));
-
-                              // pointsNotifier.value!.add(DrawingArea(
-                              //     point: details.localPosition,
-                              //     areaPaint: Paint()
-                              //       ..strokeCap = StrokeCap.round
-                              //       ..isAntiAlias = true
-                              //       ..color = selectedColor!
-                              //       ..strokeWidth = strokeWidth!));
+                              pointsNotifier
+                                  .value = List.from(pointsNotifier.value!)
+                                ..add(DrawingArea(
+                                    point: details.localPosition,
+                                    areaPaint: Paint()
+                                      // ..strokeCap = StrokeCap.butt
+                                      ..style = PaintingStyle.fill
+                                      ..strokeJoin = StrokeJoin.bevel
+                                      // ..isAntiAlias = true
+                                      ..color = selectedColor!.withOpacity(0.1)
+                                      ..strokeWidth = strokeWidth!));
                             },
                             onPanEnd: (details) {
                               pointsNotifier.value =
@@ -240,17 +236,43 @@ class MyCustomPainter extends CustomPainter {
     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.drawRect(rect, background);
     canvas.clipRect(rect);
-    
+
+    Path path = Path();
+    path.moveTo(points![0]!.point.dx, points![0]!.point.dy);
 
     for (int x = 0; x < points!.length - 1; x++) {
       if (points![x] != null && points![x + 1] != null) {
-        canvas.drawLine(
-            points![x]!.point, points![x + 1]!.point, points![x]!.areaPaint);
+        // path.lineTo(
+        //   points![x]!.point.dx,
+        //   points![x]!.point.dy,
+        // );
+        // canvas.drawPath(path, points![x]!.areaPaint);
+        // canvas.drawPoints(
+        //     PointMode.points, [points![x]!.point], points![x]!.areaPaint);
+        // canvas.drawLine(
+        //     points![x]!.point, points![x + 1]!.point, points![x]!.areaPaint);
       } else if (points![x] != null && points![x + 1] == null) {
-        canvas.drawPoints(
-            PointMode.points, [points![x]!.point], points![x]!.areaPaint);
+        path.lineTo(
+          points![x]!.point.dx,
+          points![x]!.point.dy,
+        );
+        canvas.drawPath(path, points![x]!.areaPaint);
+        log("x: ${points![x]!.point.dx} - y: ${points![x]!.point.dy}");
+
+        // canvas.drawPoints(
+        //     PointMode.points, [points![x]!.point], points![x]!.areaPaint);
       }
     }
+
+    // for (int x = 0; x < points!.length - 1; x++) {
+    //   if (points![x] != null && points![x + 1] != null) {
+    //     canvas.drawLine(
+    //         points![x]!.point, points![x + 1]!.point, points![x]!.areaPaint);
+    //   } else if (points![x] != null && points![x + 1] == null) {
+    //     canvas.drawPoints(
+    //         PointMode.points, [points![x]!.point], points![x]!.areaPaint);
+    //   }
+    // }
   }
 
   @override
