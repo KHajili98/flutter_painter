@@ -1,3 +1,5 @@
+
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -238,6 +240,7 @@ class MyCustomPainter extends CustomPainter {
     Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.drawRect(rect, background);
     canvas.clipRect(rect);
+    
 
     for (int x = 0; x < points!.length - 1; x++) {
       if (points![x] != null && points![x + 1] != null) {
@@ -255,6 +258,7 @@ class MyCustomPainter extends CustomPainter {
     return oldDelegate.points != points;
   }
 }
+
 
 // import 'package:flutter/material.dart';
 
